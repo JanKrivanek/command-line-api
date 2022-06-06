@@ -101,6 +101,8 @@ namespace System.CommandLine.Builder
                                 {
                                     // Prevent our ProcessExit from intervene and block the exit
                                     AppDomain.CurrentDomain.ProcessExit -= processExitHandler;
+                                    context.ExitCode = SIGINT_EXIT_CODE;
+                                    ExitCode = SIGINT_EXIT_CODE;
                                     Environment.Exit(SIGINT_EXIT_CODE);
                                 }, (CancellationToken)default);
                         }
