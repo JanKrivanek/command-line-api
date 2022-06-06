@@ -92,9 +92,11 @@ namespace System.CommandLine.Tests.Invocation
         }
 
         [LinuxOnlyTheory]
-        [InlineData(null)]
-        [InlineData(100)]
-        public async Task CancelOnProcessTermination_timeout_on_cancel_processing(int? timeOutMs)
+        [InlineData(null, SIGINT)]
+        [InlineData(100, SIGINT)]
+        [InlineData(null, SIGTERM)]
+        [InlineData(100, SIGTERM)]
+        public async Task CancelOnProcessTermination_timeout_on_cancel_processing(int? timeOutMs, int signo)
         {
             TimeSpan? timeOut = timeOutMs.HasValue ? TimeSpan.FromMilliseconds(timeOutMs.Value) : null; 
 
@@ -126,7 +128,7 @@ namespace System.CommandLine.Tests.Invocation
                         // and we're no longer actively blocking the event.
                         // The event handler is responsible to continue blocking until the command
                         // has finished executing. If it doesn't we won't get the CancelledExitCode.
-                        await Task.Delay(TimeSpan.FromMilliseconds(5000));
+                        await Task.Delay(TimeSpan.FromMilliseconds(2000));
 
                         context.ExitCode = CancelledExitCode;
                     }
@@ -151,7 +153,7 @@ namespace System.CommandLine.Tests.Invocation
             childState.Should().Be(ChildProcessWaiting);
 
             // Request termination
-            kill(process.Id, /*SIGTERM*/ SIGINT).Should().Be(0);
+            kill(process.Id, signo).Should().Be(0);
 
             // Verify the process terminates timely
             bool processExited = process.WaitForExit(10000);
