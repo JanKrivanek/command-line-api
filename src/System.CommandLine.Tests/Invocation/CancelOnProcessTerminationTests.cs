@@ -126,7 +126,7 @@ namespace System.CommandLine.Tests.Invocation
                         // and we're no longer actively blocking the event.
                         // The event handler is responsible to continue blocking until the command
                         // has finished executing. If it doesn't we won't get the CancelledExitCode.
-                        await Task.Delay(TimeSpan.FromMilliseconds(500));
+                        await Task.Delay(TimeSpan.FromMilliseconds(5000));
 
                         context.ExitCode = CancelledExitCode;
                     }
