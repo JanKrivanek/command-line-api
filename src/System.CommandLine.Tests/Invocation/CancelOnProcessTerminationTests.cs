@@ -20,7 +20,7 @@ namespace System.CommandLine.Tests.Invocation
         private const int SIGTERM = 15;
 
         [LinuxOnlyTheory]
-        [InlineData(SIGINT, Skip = "https://github.com/dotnet/command-line-api/issues/1206")]  // Console.CancelKeyPress
+        [InlineData(SIGINT/*, Skip = "https://github.com/dotnet/command-line-api/issues/1206"*/)]  // Console.CancelKeyPress
         [InlineData(SIGTERM)] // AppDomain.CurrentDomain.ProcessExit
         public async Task CancelOnProcessTermination_cancels_on_process_termination(int signo)
         {
@@ -151,7 +151,7 @@ namespace System.CommandLine.Tests.Invocation
             childState.Should().Be(ChildProcessWaiting);
 
             // Request termination
-            kill(process.Id, SIGTERM).Should().Be(0);
+            kill(process.Id, /*SIGTERM*/ SIGINT).Should().Be(0);
 
             // Verify the process terminates timely
             bool processExited = process.WaitForExit(10000);
